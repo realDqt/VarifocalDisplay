@@ -62,6 +62,7 @@ sysinfo.txt
 *.aab
 *.unitypackage
 *.app
+*.log
 
 # Crashlytics generated file
 crashlytics-build.properties
