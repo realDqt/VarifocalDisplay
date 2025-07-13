@@ -276,6 +276,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4472739026075513532, guid: 433f528b172be914f93b82baebad54fe, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4472739026075513532, guid: 433f528b172be914f93b82baebad54fe, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 12.47
+      objectReference: {fileID: 0}
     - target: {fileID: 7360132014241784471, guid: 433f528b172be914f93b82baebad54fe, type: 3}
       propertyPath: m_Name
       value: scene_3
@@ -662,8 +670,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -7}
+  m_LocalRotation: {x: 0.17933431, y: 0.0008508116, z: -0.00015928596, w: 0.98378783}
+  m_LocalPosition: {x: -7.0668793, y: 4.7665315, z: -0.78305596}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -682,7 +690,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Cube: {fileID: 1433800003}
-  distance: 7
   speed_x: 2000
   speed_y: 2000
 --- !u!1001 &1058416435
@@ -821,10 +828,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 694079136704973872, guid: dcc72e482e635774d86d17f8b7bb8f2b, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 7d48c8a8830eb2e46857992d83b76a19, type: 2}
     - target: {fileID: 804853487434290490, guid: dcc72e482e635774d86d17f8b7bb8f2b, type: 3}
       propertyPath: m_Name
       value: RubikCube
       objectReference: {fileID: 0}
+    - target: {fileID: 2596282514202446738, guid: dcc72e482e635774d86d17f8b7bb8f2b, type: 3}
+      propertyPath: m_Materials.Array.data[5]
+      value: 
+      objectReference: {fileID: 2100000, guid: 7d48c8a8830eb2e46857992d83b76a19, type: 2}
     - target: {fileID: 2977178770134358671, guid: dcc72e482e635774d86d17f8b7bb8f2b, type: 3}
       propertyPath: mainCamera
       value: 
@@ -1681,7 +1696,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.016346782, y: -0.000000012633751, z: 0.000000020954758}
-  m_LocalScale: {x: 0.95487344, y: 0.99999994, z: 1}
+  m_LocalScale: {x: 0.9548735, y: 0.99999994, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8351442116052679623}
@@ -4840,7 +4855,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.016346768, y: -0.000000022756506, z: 0.00000001071021}
-  m_LocalScale: {x: 0.95487344, y: 0.9999999, z: 1}
+  m_LocalScale: {x: 0.9548735, y: 0.9999999, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1451979432849157499}
