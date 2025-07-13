@@ -1,10 +1,8 @@
-Shader "Unlit/DepthTest"
+Shader "Unlit/GetRawDepth"
 {
     Properties
 	{
-		_Color("Color", Color) = (1,1,1,1)
 		_MainTex("MainTex", 2D) = "white" {}
-		_DepthFactor("DepthFactor",Range(0,100)) = 1
 	}
 		SubShader
 		{
@@ -15,6 +13,7 @@ Shader "Unlit/DepthTest"
 				{
 					"LightMode" = "UniversalForward"
 				}
+				
 				HLSLPROGRAM
 				#pragma vertex vert
 				#pragma fragment frag
@@ -22,35 +21,37 @@ Shader "Unlit/DepthTest"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
-			struct appdata
+			struct Attributes
 			{
 				float4 vertex : POSITION;
 				float4 uv : TEXCOORD0;
 
 			};
 
-			struct v2f
+			struct Varyings
 			{
 				float4 pos : SV_POSITION;
+				float3 vPos : POSITION1;
 				float2 uv : TEXCOORD0;
 				float4 scrPos : TEXCOORD3;
 			};
 
 
 			CBUFFER_START(UnityPerMaterial)
-			sampler2D _MainTex;
 			float4 _MainTex_ST;
-			float4 _Color;
-			float _DepthFactor;
 			CBUFFER_END
+
+			TEXTURE2D(_MainTex);
+			SAMPLER(samper_MainTex);
 			TEXTURE2D_X_FLOAT(_CameraDepthTexture);
 			SAMPLER(sampler_CameraDepthTexture);
 
-			v2f vert(appdata v)
+			Varyings vert(Attributes v)
 			{
-				v2f o;
+				Varyings o;
 				VertexPositionInputs vertexInput = GetVertexPositionInputs(v.vertex.xyz);
 				o.pos = vertexInput.positionCS;
+				o.vPos = vertexInput.positionVS;
 
 				o.uv = TRANSFORM_TEX(v.uv, _MainTex);
 				o.scrPos = ComputeScreenPos(vertexInput.positionCS);
@@ -58,16 +59,9 @@ Shader "Unlit/DepthTest"
 				return o;
 			}
 
-			float4 frag(v2f i) : SV_Target
+			float frag(Varyings i) : SV_Target
 			{
-				float4 sampleTex = tex2D(_MainTex, i.uv);
-				half2 screenPos = i.scrPos.xy / i.scrPos.w;
-		
-				float depth = SAMPLE_TEXTURE2D_X(_CameraDepthTexture, sampler_CameraDepthTexture, screenPos).r;
-				//float depth = tex2D(_CameraDepthTexture,i.scrPos.xy).r;
-				float depthValue = Linear01Depth(depth, _ZBufferParams);
-				float3 finalColor = float3(depthValue, depthValue, depthValue);
-				return float4(finalColor, 1);
+				return i.vPos.z;
 			}
 			ENDHLSL
 			}
