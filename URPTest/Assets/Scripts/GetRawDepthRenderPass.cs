@@ -61,8 +61,12 @@ public class GetRawDepthRenderPass : ScriptableRenderPass
                     // 拿到 width*height 个 float
                     var data = req.GetData<float>();
                     depthValues.ResizeArray(data.Length);
-                    depthValues.CopyFrom(req.GetData<float>());
-                    Debug.Log(depthValues.Length);
+                    depthValues.CopyFrom(data);
+                    Debug.Log("depthValues.Length = " + depthValues.Length);
+                    foreach (var depthValue in depthValues)
+                    {
+                        //Debug.Log(depthValue);
+                    }
                 }
             );
             HasReadBack = true;

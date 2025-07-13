@@ -61,7 +61,8 @@ Shader "Unlit/GetRawDepth"
 
 			float frag(Varyings i) : SV_Target
 			{
-				return i.vPos.z;
+				float v = i.vPos.z;
+				return -v;
 			}
 			ENDHLSL
 			}
