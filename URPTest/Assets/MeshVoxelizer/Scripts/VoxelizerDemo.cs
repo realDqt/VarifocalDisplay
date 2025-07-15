@@ -34,8 +34,16 @@ namespace MeshVoxelizerProject
 
             Box3 bounds = new Box3(mesh.bounds.min, mesh.bounds.max);
 
+            Debug.Log("Voxelizer Test: Raw Bounds.center" + mesh.bounds.center);
+            Debug.Log("Voxelizer Test: Raw Bounds.min" + mesh.bounds.min);
+
+            
             m_voxelizer = new MeshVoxelizer(size, size, size);
             m_voxelizer.Voxelize(mesh.vertices, mesh.triangles, bounds);
+            
+            Debug.Log("Voxelizer Test: Bounds.center" + m_voxelizer.MeshBound.Center);
+            Debug.Log("Voxelizer Test: Bounds.min" + m_voxelizer.MeshBound.Min);
+            Debug.Log("Voxelizer Test: Center Location = " + m_voxelizer.GetVoxelWorldPosition(size / 2, size / 2, size / 2));
 
             Vector3 scale = new Vector3(bounds.Size.x / size, bounds.Size.y / size, bounds.Size.z / size);
             Vector3 m = new Vector3(bounds.Min.x, bounds.Min.y, bounds.Min.z);

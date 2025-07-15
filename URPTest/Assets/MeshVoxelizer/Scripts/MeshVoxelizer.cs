@@ -21,6 +21,8 @@ namespace MeshVoxelizerProject
 
         public List<Box3> Bounds { get; private set; }
 
+        public Box3 MeshBound{ get; private set; }
+
         public MeshVoxelizer(int width, int height, int depth)
         {
 
@@ -32,6 +34,7 @@ namespace MeshVoxelizerProject
         }
         public void Voxelize(IList<Vector3> vertices, IList<int> indices, Box3 bounds)
         {
+	        MeshBound = new Box3(bounds);
             Array.Clear(Voxels, 0, Voxels.Length);
 
             // build an aabb tree of the mesh
@@ -87,6 +90,15 @@ namespace MeshVoxelizerProject
 	        }
 	
             //end
+        }
+
+        public Vector3 GetVoxelWorldPosition(int x, int y, int z)
+        {
+	        Vector3 extents = MeshBound.Size;
+	        Debug.Log("Voxelizer Test: extents = " + extents);
+	        Vector3 delta = new Vector3(extents.x/Width, extents.y/Height, extents.z/Depth);
+	        Debug.Log("Voxelizer Test: delta = " + delta);
+	        return MeshBound.Min + new Vector3(delta.x * x, delta.y * y, delta.z * z);
         }
 
     }
