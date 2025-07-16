@@ -14,6 +14,32 @@ namespace MeshVoxelizerProject
 
         private MeshVoxelizer m_voxelizer;
 
+        private Bounds TransformBounds(Bounds localBounds, Transform t)
+        {
+            // 获取8个局部空间的顶点
+            Vector3[] pts = new Vector3[8];
+            pts[0] = new Vector3(localBounds.min.x, localBounds.min.y, localBounds.min.z);
+            pts[1] = new Vector3(localBounds.max.x, localBounds.min.y, localBounds.min.z);
+            pts[2] = new Vector3(localBounds.min.x, localBounds.max.y, localBounds.min.z);
+            pts[3] = new Vector3(localBounds.max.x, localBounds.max.y, localBounds.min.z);
+            pts[4] = new Vector3(localBounds.min.x, localBounds.min.y, localBounds.max.z);
+            pts[5] = new Vector3(localBounds.max.x, localBounds.min.y, localBounds.max.z);
+            pts[6] = new Vector3(localBounds.min.x, localBounds.max.y, localBounds.max.z);
+            pts[7] = new Vector3(localBounds.max.x, localBounds.max.y, localBounds.max.z);
+
+            // 转换到世界空间
+            Vector3 min = t.TransformPoint(pts[0]);
+            Vector3 max = min;
+            for (int i = 1; i < pts.Length; i++)
+            {
+                Vector3 worldPt = t.TransformPoint(pts[i]);
+                min = Vector3.Min(min, worldPt);
+                max = Vector3.Max(max, worldPt);
+            }
+
+            return new Bounds((min + max) * 0.5f, max - min);
+        }
+        
         void Start()
         {
             MeshFilter filter = GetComponent<MeshFilter>();
@@ -31,22 +57,33 @@ namespace MeshVoxelizerProject
 
             Mesh mesh = filter.mesh;
             Material mat = renderer.material;
-
-            Box3 bounds = new Box3(mesh.bounds.min, mesh.bounds.max);
-
-            Debug.Log("Voxelizer Test: Raw Bounds.center" + mesh.bounds.center);
-            Debug.Log("Voxelizer Test: Raw Bounds.min" + mesh.bounds.min);
+            
+ 
+            Box3 localBounds = new Box3(mesh.bounds.min, mesh.bounds.max);
+            Debug.Log("Voxelizer Test: local Bounds.center" + mesh.bounds.center);
+            Debug.Log("Voxelizer Test: local Bounds.min" + mesh.bounds.min);
 
             
             m_voxelizer = new MeshVoxelizer(size, size, size);
-            m_voxelizer.Voxelize(mesh.vertices, mesh.triangles, bounds);
+            m_voxelizer.Voxelize(mesh.vertices, mesh.triangles, localBounds);
             
-            Debug.Log("Voxelizer Test: Bounds.center" + m_voxelizer.MeshBound.Center);
-            Debug.Log("Voxelizer Test: Bounds.min" + m_voxelizer.MeshBound.Min);
-            Debug.Log("Voxelizer Test: Center Location = " + m_voxelizer.GetVoxelWorldPosition(size / 2, size / 2, size / 2));
+            // Test GetVoxelWorldPosition Begin
+            // 获取世界坐标系下的bounds
+            Bounds worldBounds = TransformBounds(mesh.bounds, transform);
+            m_voxelizer.WorldBounds = new Box3(worldBounds.min, worldBounds.max);
+            
+            Debug.Log("Voxelizer Test: World Bounds.center" + m_voxelizer.WorldBounds.Center);
+            Debug.Log("Voxelizer Test: World Bounds.min" + m_voxelizer.WorldBounds.Min);
+            Debug.Log("Voxelizer Test: World Center Location = " + m_voxelizer.GetVoxelWorldPosition(size / 2, size / 2, size / 2));
+            // Test GetVoxelWorldPosition End
+            
+            
+            // Test GetDepthFromCamera Begin
+            Debug.Log("Voxelizer Test: Center Depth = " + m_voxelizer.GetDepthFromCamera(Camera.main, size / 2, size / 2, size / 2));
+            // Test GetDepthFromCamera End
 
-            Vector3 scale = new Vector3(bounds.Size.x / size, bounds.Size.y / size, bounds.Size.z / size);
-            Vector3 m = new Vector3(bounds.Min.x, bounds.Min.y, bounds.Min.z);
+            Vector3 scale = new Vector3(localBounds.Size.x / size, localBounds.Size.y / size, localBounds.Size.z / size);
+            Vector3 m = new Vector3(localBounds.Min.x, localBounds.Min.y, localBounds.Min.z);
             mesh = CreateMesh(m_voxelizer.Voxels, scale, m);
 
             GameObject go = new GameObject("Voxelized");
