@@ -102,8 +102,16 @@ namespace MeshVoxelizerProject
 	        Debug.Log("Voxelizer Test: delta = " + delta);
 	        return WorldBounds.Min + new Vector3(delta.x * x, delta.y * y, delta.z * z);
         }
+
+        public bool HasVoxel(int x, int y, int z)
+        {
+	        return Voxels[x, y, z] == 1;
+        }
         
-        public float GetDepthFromCamera(Camera camera, int x, int y, int z){
+        public float GetDepthFromCamera(Camera camera, int x, int y, int z)
+        {
+	        // 若该处无体素，则返回float最大值
+	        if (!HasVoxel(x, y, z)) return float.MaxValue;
 	        Vector3 viewDir = Vector3.Normalize(camera.transform.forward);
 	        Vector3 voxelWorldLocation = GetVoxelWorldPosition(x,y,z);
 	        Vector3 deltaVec = voxelWorldLocation - camera.transform.position;
