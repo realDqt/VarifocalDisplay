@@ -1,17 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class GameManager : MonoBehaviour
 {
-    public Camera depthCamera0;
+    [FormerlySerializedAs("depthCamera0")] public Camera m_DepthCamera0;
 
-    private GameObject[] singleCubes = new GameObject[27];
+    private GameObject[] m_SingleCubes = new GameObject[27];
 
-    private GameObject magicCube;
+    private GameObject m_MagicCube;
+
+    private float m_R = 0.05f;
+    private float m_Mu = 0.039f;
+    private float m_ObjectiveLen = 55.6f;
 
 
-    private Dictionary<string, bool> resetDic = new Dictionary<string, bool>();
+    private Dictionary<string, bool> m_ResetDic = new Dictionary<string, bool>();
     // Start is called before the first frame update
     void Start()
     {
@@ -36,11 +41,11 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < 27; i++)
         {
             string key = GetNameByIdx(i) + "(Clone)";
-            if (resetDic.ContainsKey(key))
+            if (m_ResetDic.ContainsKey(key))
             {
                 Debug.Log(key + " Move!");
-                if(singleCubes[i] != null) 
-                    singleCubes[i].transform.position = Vector3.Lerp(singleCubes[i].transform.position, new Vector3(0, 0, 0), Time.deltaTime);
+                if(m_SingleCubes[i] != null) 
+                    m_SingleCubes[i].transform.position = Vector3.Lerp(m_SingleCubes[i].transform.position, new Vector3(0, 0, 0), Time.deltaTime);
             }
         }
     }
@@ -64,7 +69,7 @@ public class GameManager : MonoBehaviour
             );
 
             // 记录实例化的对象
-            singleCubes[i] = Instantiate(prefab, randPos, Quaternion.identity);
+            m_SingleCubes[i] = Instantiate(prefab, randPos, Quaternion.identity);
         }
     }
 
@@ -106,14 +111,17 @@ public class GameManager : MonoBehaviour
                 // hack: 该资产cube的position需要修正
                 Vector3 cubeWorldPosition = hit.collider.transform.position + localCenter;
                 Debug.Log($"Clicked: {hit.collider.name}  World Position: {hit.collider.transform.position + localCenter}");
-                Debug.Log($"Clicked: {hit.collider.name}  Depth: {GetDepthFromCamera(cubeWorldPosition, depthCamera0)}");
+                
+                float depth = GetDepthFromCamera(cubeWorldPosition, m_DepthCamera0);
+                Debug.Log($"Clicked: {hit.collider.name}  Depth: {depth}");
+                Debug.Log($"Clicked: {hit.collider.name}  Diopter: {GetDiopter(depth, m_R, m_Mu, m_ObjectiveLen)}");
                 // 归位
                 //hit.collider.gameObject.transform.position = Vector3.zero;
-                if (!resetDic.ContainsKey(hit.collider.name))
+                if (!m_ResetDic.ContainsKey(hit.collider.name))
                 {
-                    resetDic.Add(hit.collider.name, true);
+                    m_ResetDic.Add(hit.collider.name, true);
                     Debug.Log("name = " + hit.collider.name);
-                    if (resetDic.Count == 27)
+                    if (m_ResetDic.Count == 27)
                     {
                         MagicCubeTime();
                     }
@@ -132,15 +140,15 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        magicCube= Instantiate(magicCubePrefab, Vector3.zero, Quaternion.identity);
-        magicCube.GetComponent<Cube>().mainCamera = depthCamera0;
+        m_MagicCube= Instantiate(magicCubePrefab, Vector3.zero, Quaternion.identity);
+        m_MagicCube.GetComponent<Cube>().mainCamera = m_DepthCamera0;
 
         // 销毁实例化的对象
         for (int i = 0; i < 27; i++)
         {
-            if (singleCubes[i] != null)
+            if (m_SingleCubes[i] != null)
             {
-                Destroy(singleCubes[i]);
+                Destroy(m_SingleCubes[i]);
             }
         }
     }
@@ -155,5 +163,11 @@ public class GameManager : MonoBehaviour
         Vector3 deltaVec =  worldPosition - depthCamera.transform.position;
         Vector3 viewDir = Vector3.Normalize(depthCamera.transform.forward);
         return Vector3.Dot(deltaVec, viewDir);
+    }
+
+    float GetDiopter(float d, float R, float mu, float objectiveLen)
+    {
+        float k = R * R / mu;
+        return (R / d - 2.0f) / k - objectiveLen;
     }
 }
