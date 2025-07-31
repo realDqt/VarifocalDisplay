@@ -167,7 +167,6 @@ public class GameManager : MonoBehaviour
 
     float GetDiopter(float d, float R, float mu, float objectiveLen)
     {
-        float k = R * R / mu;
-        return (R / d - 2.0f) / k - objectiveLen;
+        return (R / d - 2 - R / mu) / (-R);
     }
 }
