@@ -21,6 +21,8 @@ public class Cube : MonoBehaviour
     List<Brick> rotateBricks = new List<Brick>();
     bool rotateInProcess = false;
 
+    private int m_RotateCount = 0;
+
     public class RotationData
     {
         public Axis axis;
@@ -44,6 +46,22 @@ public class Cube : MonoBehaviour
 
         Rotation = new GameObject("Rotation");
         Rotation.transform.position = Vector3.zero;
+
+        FillRotationStack();
+        Recover();
+        for (int i = 0; i < m_RotateCount; ++i)
+        {
+            //FillRotationStack();
+        }
+    }
+
+    void LogRotationData(RotationData rotationData)
+    {
+        Debug.Log("Rotation Data begin:");
+        Debug.Log(rotationData.axis);
+        Debug.Log(rotationData.isClockwise);
+        Debug.Log(rotationData.offset);
+        Debug.Log("Rotation Data end:");
     }
 
     private void Rotate(Vector3 cross)
@@ -110,7 +128,28 @@ public class Cube : MonoBehaviour
             }
             rotateInProcess = true;
             rotationStack.Push(cur_rot);
+            //LogRotationData(cur_rot);
         }
+    }
+
+    private void FillRotationStack()
+    {
+        RotationData rd0 = new RotationData(Axis.Y, false);
+        rd0.offset = -1;
+        RotationData rd1 = new RotationData(Axis.Z, true);
+        rd1.offset = -1;
+        RotationData rd2 = new RotationData(Axis.Z, true);
+        rd2.offset = 1;
+        RotationData rd3 = new RotationData(Axis.Y, false);
+        rd3.offset = -1;
+        RotationData rd4 = new RotationData(Axis.Y, true);
+        rd4.offset = 1;
+        
+        rotationStack.Push(rd0);
+        rotationStack.Push(rd1);
+        rotationStack.Push(rd2);
+        rotationStack.Push(rd3);
+        rotationStack.Push(rd4);
     }
 
     private void OnMouseDrag()
@@ -192,6 +231,7 @@ public class Cube : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        /*
         if (!rotateInProcess && !recoverInProcess)
         {
             OnMouseDrag();
@@ -201,6 +241,7 @@ public class Cube : MonoBehaviour
         {
             Recover();
         }
+        */
     }
 
     public void Recover()

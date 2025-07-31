@@ -15,19 +15,51 @@ public class GameManager : MonoBehaviour
     private float m_Mu = 0.039f;
     private float m_ObjectiveLen = 55.6f;
 
+    private int m_Idx = 0;
+    
+    // 拟合的系数
+    public Vector4[] m_KR = new Vector4[3] { new Vector4(-4.078462e-04f, -9.498750e-03f, 1.025567e+00f, 1.0f), new Vector4(), new Vector4() };
+    public Vector4[] m_KG = new Vector4[3] { new Vector4(-3.828662e-04f, -1.002039e-02f, 1.027372e+00f, 1.0f), new Vector4(), new Vector4() };
+    public Vector4[] m_KB = new Vector4[3]{ new Vector4(-3.743558e-04f, -1.014192e-02f, 1.028135e+00f, 1.0f), new Vector4(), new Vector4() };
+
 
     private Dictionary<string, bool> m_ResetDic = new Dictionary<string, bool>();
     // Start is called before the first frame update
     void Start()
     {
-        SpawnSingleCubes();
+        //SpawnSingleCubes();
     }
 
     // Update is called once per frame
     void Update()
     {
-        LogDepth();
-        CubeMove();
+        //LogDepth();
+        //CubeMove();
+        SetCoefficient();
+    }
+
+    void SetCoefficient()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            m_Idx = 0;
+        }else if (Input.GetKeyDown(KeyCode.W))
+        {
+            m_Idx = 1;
+        }else if (Input.GetKeyDown(KeyCode.E))
+        {
+            m_Idx = 2;
+        }
+        
+        //Debug.Log("Test: coefficient idx = " + m_Idx);
+
+        var antiDistortion = m_DepthCamera0.GetComponent<AntiDistortion>();
+        if (antiDistortion)
+        {
+            antiDistortion.m_KR = m_KR[m_Idx];
+            antiDistortion.m_KG = m_KG[m_Idx];
+            antiDistortion.m_KB = m_KB[m_Idx]; 
+        }
     }
 
     string GetNameByIdx(int i)
@@ -110,7 +142,7 @@ public class GameManager : MonoBehaviour
                 }
                 // hack: 该资产cube的position需要修正
                 Vector3 cubeWorldPosition = hit.collider.transform.position + localCenter;
-                Debug.Log($"Clicked: {hit.collider.name}  World Position: {hit.collider.transform.position + localCenter}");
+                Debug.Log($"Clicked: {hit.collider.name}  World Position: {cubeWorldPosition}");
                 
                 float depth = GetDepthFromCamera(cubeWorldPosition, m_DepthCamera0);
                 Debug.Log($"Clicked: {hit.collider.name}  Depth: {depth}");
@@ -167,6 +199,6 @@ public class GameManager : MonoBehaviour
 
     float GetDiopter(float d, float R, float mu, float objectiveLen)
     {
-        return (R / d - 2 - R / mu) / (-R);
+        return (R / d - 2 - R / mu) / (-R) - objectiveLen;
     }
 }
