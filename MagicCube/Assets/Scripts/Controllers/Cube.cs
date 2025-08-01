@@ -21,7 +21,7 @@ public class Cube : MonoBehaviour
     List<Brick> rotateBricks = new List<Brick>();
     bool rotateInProcess = false;
 
-    private int m_RotateCount = 20;
+    private int m_RotateCount = 200;
 
     public class RotationData
     {
