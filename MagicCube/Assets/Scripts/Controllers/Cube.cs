@@ -21,7 +21,7 @@ public class Cube : MonoBehaviour
     List<Brick> rotateBricks = new List<Brick>();
     bool rotateInProcess = false;
 
-    private int m_RotateCount = 0;
+    private int m_RotateCount = 20;
 
     public class RotationData
     {
@@ -47,12 +47,9 @@ public class Cube : MonoBehaviour
         Rotation = new GameObject("Rotation");
         Rotation.transform.position = Vector3.zero;
 
-        FillRotationStack();
+        FillRotationStackRandomly(m_RotateCount);
+        //FillRotationStack();
         Recover();
-        for (int i = 0; i < m_RotateCount; ++i)
-        {
-            //FillRotationStack();
-        }
     }
 
     void LogRotationData(RotationData rotationData)
@@ -150,6 +147,16 @@ public class Cube : MonoBehaviour
         rotationStack.Push(rd2);
         rotationStack.Push(rd3);
         rotationStack.Push(rd4);
+    }
+
+    private void FillRotationStackRandomly(int rotateCount)
+    {
+        for (int i = 0; i < rotateCount; ++i)
+        {
+            RotationData rd = new RotationData((Axis)Random.Range(0, 3), Random.Range(0, 2) == 0);
+            rd.offset = Random.Range(-1, 2);
+            rotationStack.Push(rd);
+        }
     }
 
     private void OnMouseDrag()
