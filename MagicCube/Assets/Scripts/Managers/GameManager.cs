@@ -24,6 +24,10 @@ public class GameManager : MonoBehaviour
 
 
     private Dictionary<string, bool> m_ResetDic = new Dictionary<string, bool>();
+
+    public GameObject LensController;
+    private TunableLensController lensController;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -33,7 +37,8 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //LogDepth();
+        lensController = LensController.GetComponent<TunableLensController>();
+        LogDepth();
         //CubeMove();
         SetCoefficient();
     }
@@ -146,7 +151,13 @@ public class GameManager : MonoBehaviour
                 
                 float depth = GetDepthFromCamera(cubeWorldPosition, m_DepthCamera0);
                 Debug.Log($"Clicked: {hit.collider.name}  Depth: {depth}");
-                Debug.Log($"Clicked: {hit.collider.name}  Diopter: {GetDiopter(depth, m_R, m_Mu, m_ObjectiveLen)}");
+                float diopter = GetDiopter(depth, m_R, m_Mu, m_ObjectiveLen);
+                Debug.Log($"Clicked: {hit.collider.name}  Diopter: {diopter}");
+
+
+                Debug.Log($"Object clicked. Distance: {depth:F2}m, Diopter: {diopter:F2}D. Setting static focus.");
+                lensController.SetFocalPower(diopter);
+
                 // 归位
                 //hit.collider.gameObject.transform.position = Vector3.zero;
                 if (!m_ResetDic.ContainsKey(hit.collider.name))

@@ -421,6 +421,7 @@ MonoBehaviour:
   - {x: -0.0003743558, y: -0.01014192, z: 1.028135, w: 1}
   - {x: 0, y: 0, z: 0, w: 0}
   - {x: 0, y: 0, z: 0, w: 0}
+  LensController: {fileID: 1981328364}
 --- !u!1001 &210347137
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1132,6 +1133,57 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6d464ef6a31405343872110f29cfe0de, type: 3}
+--- !u!1 &1981328364
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1981328366}
+  - component: {fileID: 1981328365}
+  m_Layer: 0
+  m_Name: LensController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1981328365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1981328364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29cac896e4cb16a4a90c513598f33163, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  portName: COM5
+  frequency: 8
+  amplitude: 6
+  offset: 0
+  phase: 0
+  cycles: 10
+  commandsPerSecond: 12
+--- !u!4 &1981328366
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1981328364}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2011172668
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5562,3 +5614,4 @@ SceneRoots:
   - {fileID: 128688632}
   - {fileID: 173800453}
   - {fileID: 2011172668}
+  - {fileID: 1981328366}
