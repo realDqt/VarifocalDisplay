@@ -36,6 +36,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        lensController = LensController.GetComponent<TunableLensController>();
         SpawnSingleCube();
     }
 
@@ -84,7 +85,7 @@ public class GameManager : MonoBehaviour
             string key = GetNameByIdx(i) + "(Clone)";
             if (m_ResetDic.ContainsKey(key))
             {
-                Debug.Log(key + " Move!");
+                //Debug.Log(key + " Move!");
                 if(m_SingleCubes[i] != null) 
                     m_SingleCubes[i].transform.position = Vector3.Lerp(m_SingleCubes[i].transform.position, new Vector3(0, 0, 0), Time.deltaTime);
             }
