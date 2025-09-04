@@ -92,6 +92,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    
     void SpawnSingleCube()
     {
         if (m_CurCubeCount < m_SingleCubeCount)
@@ -105,15 +106,57 @@ public class GameManager : MonoBehaviour
                 return;
             }
 
+            var collider = prefab.GetComponent<Collider>() as BoxCollider;
+
+            if (collider == null)
+            {
+                Debug.LogError("Box Collider not found: " + randIndex);
+                return;
+            }
+            
             Vector3 randPos = new Vector3(
-                Random.Range(-10f, 10f),
+                Random.Range(-2f, 2f),
                 Random.Range(-1f, 1f),
-                Random.Range(-10f, 10f)
+                Random.Range(-5f, 5f)
             );
+            
+            // hack
+            Vector3 cubeWorldPos = randPos + collider.center * 100;
+           
+
+            // 防止立方体落在大立方体内
+            while (Mathf.Abs(cubeWorldPos.x) < 2.0f || Mathf.Abs(cubeWorldPos.y) < 2.0f || Mathf.Abs(cubeWorldPos.z) < 2.0f)
+            {
+                randPos = new Vector3(
+                    Random.Range(-2f, 2f),
+                    Random.Range(-1f, 1f),
+                    Random.Range(-5f, 5f)
+                );
+                cubeWorldPos = randPos + collider.center * 100;
+            }
+            
 
             // 记录实例化的对象
             m_SingleCubes[randIndex] = Instantiate(prefab, randPos, Quaternion.identity);
+            
+            
+            Debug.Log("rand pos = " + randPos);
+            Debug.Log("collider.center = " +  collider.center);
+            Debug.Log("Cube World Position = " + cubeWorldPos);
+            
             m_CurCubeCount++;
+            
+
+            
+            // 计算diopter
+            float depth = GetDepthFromCamera(cubeWorldPos, m_DepthCamera0);
+            Debug.Log($"Appear: {m_SingleCubes[randIndex].name}  Depth: {depth}");
+            float diopter = GetDiopter(depth, m_R, m_Mu, m_ObjectiveLen);
+            Debug.Log($"Appear: {m_SingleCubes[randIndex].name}  Diopter: {diopter}");
+
+
+            Debug.Log($"Object appeared. Distance: {depth:F2}m, Diopter: {diopter:F2}D. Setting static focus.");
+            lensController.SetFocalPower(diopter);
         }
     }
 
@@ -136,7 +179,7 @@ public class GameManager : MonoBehaviour
             if (Physics.Raycast(ray, out hit))
             {
                 // 打印被点击物体的名字和世界坐标
-                
+                /*
                 Collider col = hit.collider;
                 Vector3 localCenter = new Vector3(0, 0, 0);
                 if (col is BoxCollider box)
@@ -168,7 +211,7 @@ public class GameManager : MonoBehaviour
 
                 Debug.Log($"Object clicked. Distance: {depth:F2}m, Diopter: {diopter:F2}D. Setting static focus.");
                 lensController.SetFocalPower(diopter);
-
+                */
                 // 归位
                 //hit.collider.gameObject.transform.position = Vector3.zero;
                 if (!m_ResetDic.ContainsKey(hit.collider.name))
