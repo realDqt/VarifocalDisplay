@@ -66,13 +66,18 @@ public class Cube : MonoBehaviour
         float z = Vector3.Angle(cross, -transform.forward);
 
         float angle = 0;
-        if (x < 15 || x > 165) {
+        if (x < 15 || x > 165)
+        {
             RotateAxis = Axis.X;
             angle = x;
-        } else if (y < 15 || y > 165) {
+        }
+        else if (y < 15 || y > 165)
+        {
             RotateAxis = Axis.Y;
             angle = y;
-        } else if (z < 15 || z > 165) {
+        }
+        else if (z < 15 || z > 165)
+        {
             RotateAxis = Axis.Z;
             angle = z;
         }
@@ -137,14 +142,14 @@ public class Cube : MonoBehaviour
         rd3.offset = -1;
         RotationData rd4 = new RotationData(Axis.Y, true);
         rd4.offset = 1;
-        
+
         rotationStack.Push(rd0);
         rotationStack.Push(rd1);
         rotationStack.Push(rd2);
         rotationStack.Push(rd3);
         rotationStack.Push(rd4);
     }
-    
+
     private void FillRotationStackRandomly(int rotateCount)
     {
         for (int i = 0; i < rotateCount; ++i)
@@ -181,7 +186,7 @@ public class Cube : MonoBehaviour
             {
                 mouseDragDir = hit.point - mouseClickPos;
                 Vector3 cross = Vector3.Cross(mouseClickNormal, mouseDragDir).normalized;
-                if(mouseDragDir.sqrMagnitude > 2f)
+                if (mouseDragDir.sqrMagnitude > 2f)
                 {
                     Rotate(cross);
                     hitBrick = null;
@@ -234,7 +239,7 @@ public class Cube : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
         if (!rotateInProcess && !recoverInProcess)
         {
             OnMouseDrag();
@@ -244,7 +249,7 @@ public class Cube : MonoBehaviour
         {
             Recover();
         }
-        
+
     }
 
     public void Recover()
@@ -255,7 +260,7 @@ public class Cube : MonoBehaviour
 
     IEnumerator RecoverCube()
     {
-        while(rotationStack.Count > 0)
+        while (rotationStack.Count > 0)
         {
             if (!rotateInProcess)
             {
@@ -303,5 +308,5 @@ public class Cube : MonoBehaviour
             yield return null;
         }
         recoverInProcess = false;
-    }    
+    }
 }
